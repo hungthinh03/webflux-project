@@ -27,5 +27,25 @@ public class BookServiceImpl implements BookService {
         return repo.findById(id);
     }
 
-    //testee
+    @Override
+    public Mono<Book> updateBook(Book book) {
+        if (book.getId() == null) {
+            return Mono.error(new RuntimeException("Book id is required for update"));
+        }
+
+        return repo.findById(book.getId())
+                .switchIfEmpty(Mono.error(new RuntimeException("Book not found: " + book.getId())))
+                .flatMap(existing -> {
+                    existing.setTitle(book.getTitle());
+                    existing.setIsNew(false);  // false = update
+                    return repo.save(existing);
+                });
+    }
+
+    @Override
+    public Mono<Void> deleteBookById(String id) {
+        return repo.deleteById(id);
+    }
+
+
 }

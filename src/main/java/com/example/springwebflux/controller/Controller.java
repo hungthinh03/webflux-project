@@ -13,30 +13,36 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/books") //Add "/books" automatically
 public class Controller {
     @Autowired
-    private BookService service; // now depends on interface
+    private BookService service;
 
-    @GetMapping("/testPrint")
-    public String testPrint() {
-        return "Hello";
-    }
-
-    /*
+    //Create
     @PostMapping
-    public Mono<Book> createBook(@RequestBody Book book) { //(@RequestBody Book book)
-        return service.createBook(book);
-    }
-    */
-
-    @GetMapping("/test") //PostMapping
-    public Mono<Book> createTestBook() {
-        Book book = new Book("2", "Kingdom Hearts");
+    public Mono<Book> createNewBook(@RequestBody Book book) { //(@RequestBody Book book)
         return service.createBook(book);
     }
 
-
+    //Read
     @GetMapping("/all")
-    public Flux<Book> showAllBooks() {  //Flux<Book>
+    public Flux<Book> showAllBooks() {
         return service.getAllBooks();
+    }
+
+    //
+    @GetMapping("/{id}")
+    public Mono<Book> showBookById(@PathVariable String id) {
+        return service.getBookById(id);
+    }
+
+    //Update
+    @PutMapping
+    public Mono<Book> updateBook(@RequestBody Book book) {
+        return service.updateBook(book);
+    }
+
+    //Delete
+    @DeleteMapping("/{id}")
+    public Mono<Void> deleteBook(@PathVariable String id) {
+        return service.deleteBookById(id);
     }
 
 
