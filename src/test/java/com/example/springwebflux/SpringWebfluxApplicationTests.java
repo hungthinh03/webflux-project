@@ -1,51 +1,94 @@
 package com.example.springwebflux;
 
+import com.example.springwebflux.dto.BookDTO;
+import com.example.springwebflux.model.Author;
 import com.example.springwebflux.model.Book;
+import com.example.springwebflux.repository.AuthorRepository;
 import com.example.springwebflux.repository.BookRepository;
+import com.example.springwebflux.service.BookService;
 import com.example.springwebflux.service.BookServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.time.LocalDate;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class SpringWebfluxApplicationTests {
-    /*
-    @Mock // creates dummy dependencies
+
+    @Mock // creates dependencies
     private BookRepository repo;
 
-    @InjectMocks // injects dummy dependencies into the class under test
+    @Mock // creates dependencies
+    private AuthorRepository authorRepo;
+
+    //@Autowired
+    //private WebTestClient webTestClient;
+
+    @InjectMocks // injects dependencies into test
     private BookServiceImpl service;
 
-    private Book sampleBook;
-
-    @BeforeEach // prepares the environment before each test case
+    @BeforeEach // prepares the environment
     void setup() {
         MockitoAnnotations.openMocks(this);
-        sampleBook = new Book("Test Book");
     }
 
     @Test
-    void createBook_Success() {
-        Book book = sampleBook;
-        when(repo.save(book)).thenReturn(Mono.just(book));
+    void createBookDTO_Success() {
+        Author author = new Author(1, "Rowling");
+        BookDTO input = new BookDTO(null, "Test Book", author, "Fiction", LocalDate.now());
+        Book saved = new Book(null, "Test Book", author.getId(), "Fiction", LocalDate.now());
 
-        Mono<Book> result = service.createBook(book);
+        when(repo.save(any(Book.class))).thenReturn(Mono.just(saved)); // return the saved Book
+        when(authorRepo.findById(author.getId())).thenReturn(Mono.just(author)); // return the author
 
-        StepVerifier.create(result)
-                .expectNextMatches(b -> b.getId().equals(1) && b.getTitle().equals("Test Book"))
+        StepVerifier.create(service.createBook(input))
+                .expectNextMatches(dto ->
+                        dto.getTitle().equals("Test Book") &&
+                                dto.getAuthor().getName().equals("Rowling") &&
+                                dto.getGenre().equals("Fiction")
+                )
                 .verifyComplete();
-
-        verify(repo).save(book); //
     }
 
+    /*
+    @Test
+    void createBook_ShouldReturnBookDTO() {
+        Author author = new Author(1, "Rowling");
+        BookDTO inputDTO = new BookDTO(null, "Test Book", author, "Fiction", LocalDate.now());
+        BookDTO savedDTO = new BookDTO(1, "Test Book", author, "Fiction", LocalDate.now());
+
+        // Mock the service behavior
+        when(service.createBook(inputDTO)).thenReturn(Mono.just(savedDTO));
+
+        webTestClient.post()
+                .uri("/books")
+                .bodyValue(inputDTO)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(BookDTO.class)
+                .value(dto -> {
+                    assertEquals("Test Book", dto.getTitle());
+                    assertEquals("Rowling", dto.getAuthor().getName());
+                });
+
+        verify(service).createBook(inputDTO);
+    }
+
+
+     */
+    /*
     @Test
     void createBook_NullTitle_ShouldFail() {
         Book book = sampleBook;
@@ -126,5 +169,7 @@ class SpringWebfluxApplicationTests {
     }
 
 
-     */
+
+         */
+
 }
