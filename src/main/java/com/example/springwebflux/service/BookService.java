@@ -11,12 +11,12 @@ public interface BookService {
     Flux<Book> getAllBooks();
 
     //
-    Mono<Book> getBookById(String id);
+    Mono<Book> getBookById(Integer id);
 
     //
     Mono<Book> updateBook(Book book);
 
     //
-    Mono<Void> deleteBookById(String id);
+    Mono<Void> deleteBookById(Integer id);
 
 }

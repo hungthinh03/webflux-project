@@ -23,13 +23,13 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Mono<Book> getBookById(String id) {
+    public Mono<Book> getBookById(Integer id) {
         return repo.findById(id);
     }
 
     @Override
     public Mono<Book> updateBook(Book book) {
-        if (book.getId() == null) {
+        if (book.getId() == null) { //Mno just
             return Mono.error(new RuntimeException("Book id is required for update"));
         }
 
@@ -37,13 +37,12 @@ public class BookServiceImpl implements BookService {
                 .switchIfEmpty(Mono.error(new RuntimeException("Book not found: " + book.getId())))
                 .flatMap(existing -> {
                     existing.setTitle(book.getTitle());
-                    existing.setIsNew(false);  // false = update
                     return repo.save(existing);
                 });
     }
 
     @Override
-    public Mono<Void> deleteBookById(String id) {
+    public Mono<Void> deleteBookById(Integer id) {
         return repo.deleteById(id);
     }
 

@@ -6,34 +6,25 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.time.LocalDate;
+
 @Data
 @Table("book")
-public class Book implements Persistable<String> {
+public class Book {
     @Id
-    private String id;
+    private Integer id; // Can be null before insert
     private String title;
+    private Author author;
+    private String genre;
+    private LocalDate publishedDate;
 
-    @Transient  // Not stored in DB
-    private boolean isNew = true;
 
-    @Override
-    public boolean isNew() {
-        return isNew;
-    }
+    //
+    public Book() {}
 
-    public Book(String id, String title) {
-        this.id = id;
+    public Book(String title) {
         this.title = title;
     }
 
-
-
-    public Boolean getIsNew() {
-        return isNew;
-    }
-
-    public void setIsNew(Boolean isNew) {
-        this.isNew = isNew;
-    }
 }
 

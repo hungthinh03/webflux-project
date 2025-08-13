@@ -29,7 +29,7 @@ public class Controller {
 
     //
     @GetMapping("/{id}")
-    public Mono<Book> showBookById(@PathVariable String id) {
+    public Mono<Book> showBookById(@PathVariable Integer id) {
         return service.getBookById(id);
     }
 
@@ -41,7 +41,7 @@ public class Controller {
 
     //Delete
     @DeleteMapping("/{id}")
-    public Mono<Void> deleteBook(@PathVariable String id) {
+    public Mono<Void> deleteBook(@PathVariable Integer id) {
         return service.deleteBookById(id);
     }
 

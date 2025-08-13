@@ -29,7 +29,7 @@ class SpringWebfluxApplicationTests {
     @BeforeEach // prepares the environment before each test case
     void setup() {
         MockitoAnnotations.openMocks(this);
-        sampleBook = new Book("1", "Test Book");
+        sampleBook = new Book("Test Book");
     }
 
     @Test
@@ -40,10 +40,10 @@ class SpringWebfluxApplicationTests {
         Mono<Book> result = service.createBook(book);
 
         StepVerifier.create(result)
-                .expectNextMatches(b -> b.getId().equals("1") && b.getTitle().equals("Test Book"))
+                .expectNextMatches(b -> b.getId().equals(1) && b.getTitle().equals("Test Book"))
                 .verifyComplete();
 
-        verify(repo).save(book);
+        verify(repo).save(book); //
     }
 
     @Test
@@ -57,7 +57,7 @@ class SpringWebfluxApplicationTests {
                 .expectErrorMessage("Title cannot be null")
                 .verify();
 
-        verify(repo).save(book);
+        verify(repo).save(book); //
     }
 
     @Test
@@ -78,18 +78,18 @@ class SpringWebfluxApplicationTests {
     // READ: getBookById
     @Test
     void testGetBookById_Found() {
-        when(repo.findById("1")).thenReturn(Mono.just(sampleBook));
+        when(repo.findById(1)).thenReturn(Mono.just(sampleBook));
 
-        StepVerifier.create(service.getBookById("1"))
-                .expectNextMatches(book -> book.getId().equals("1") && book.getTitle().equals("Test Book"))
+        StepVerifier.create(service.getBookById(1))
+                .expectNextMatches(book -> book.getId().equals(1) && book.getTitle().equals("Test Book"))
                 .verifyComplete();
     }
 
     @Test
     void testGetBookById_NotFound() {
-        when(repo.findById("2")).thenReturn(Mono.empty());
+        when(repo.findById(2)).thenReturn(Mono.empty());
 
-        StepVerifier.create(service.getBookById("2"))
+        StepVerifier.create(service.getBookById(2))
                 .expectComplete()
                 .verify();
     }
@@ -97,8 +97,8 @@ class SpringWebfluxApplicationTests {
     // UPDATE: updateBook
     @Test
     void testUpdateBook_Success() {
-        Book updated = new Book("1", "Updated Title");
-        when(repo.findById("1")).thenReturn(Mono.just(sampleBook));
+        Book updated = new Book("Updated Title");
+        when(repo.findById(1)).thenReturn(Mono.just(sampleBook));
         when(repo.save(any(Book.class))).thenReturn(Mono.just(updated));
 
         StepVerifier.create(service.updateBook(updated))
@@ -108,8 +108,8 @@ class SpringWebfluxApplicationTests {
 
     @Test
     void testUpdateBook_NotFound() {
-        Book updated = new Book("2", "Updated Title");
-        when(repo.findById("2")).thenReturn(Mono.empty());
+        Book updated = new Book("Updated Title");
+        when(repo.findById(2)).thenReturn(Mono.empty());
 
         StepVerifier.create(service.updateBook(updated))
                 .expectError(RuntimeException.class)
@@ -119,9 +119,10 @@ class SpringWebfluxApplicationTests {
     // DELETE: deleteBook
     @Test
     void testDeleteBook_Success() {
-        when(repo.deleteById("1")).thenReturn(Mono.empty());
+        when(repo.deleteById(1)).thenReturn(Mono.empty());
 
-        StepVerifier.create(service.deleteBookById("1"))
+        StepVerifier.create(service.deleteBookById(1))
                 .verifyComplete();
     }
+
 }
