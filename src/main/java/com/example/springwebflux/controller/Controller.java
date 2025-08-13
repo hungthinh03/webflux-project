@@ -1,7 +1,6 @@
 package com.example.springwebflux.controller;
 
 import com.example.springwebflux.dto.BookDTO;
-import com.example.springwebflux.model.Book;
 import com.example.springwebflux.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,17 +21,29 @@ public class Controller {
         return service.createBook(bookDTO);
     }
 
+
     //Read
     @GetMapping("/all")
     public Flux<BookDTO> showAllBooks() {
         return service.getAllBooks();
     }
 
-    //
     @GetMapping("/{id}")
     public Mono<BookDTO> showBookById(@PathVariable Integer id) {
         return service.getBookById(id);
     }
+
+    @GetMapping("/author/{authorId}")
+    public Flux<BookDTO> getBooksByAuthorId(@PathVariable Integer authorId) {
+        return service.getBooksByAuthorId(authorId);
+    }
+
+    // Search books by author name
+    @GetMapping("/author/name/{name}")
+    public Flux<BookDTO> getBooksByAuthorName(@PathVariable String name) {
+        return service.getBooksByAuthorName(name);
+    }
+
 
     //Update
     @PutMapping
@@ -40,12 +51,12 @@ public class Controller {
         return service.updateBook(bookDTO);
     }
 
+
     //Delete
     @DeleteMapping("/{id}")
     public Mono<Void> deleteBook(@PathVariable Integer id) {
         return service.deleteBookById(id);
     }
-
 
 }
 

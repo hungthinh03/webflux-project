@@ -9,9 +9,12 @@ public interface BookService {
 
     //
     Flux<BookDTO> getAllBooks();
-
     //
     Mono<BookDTO> getBookById(Integer id);
+    //
+    Flux<BookDTO> getBooksByAuthorId(Integer authorId);
+    //
+    Flux<BookDTO> getBooksByAuthorName(String name);
 
     //
     Mono<BookDTO> updateBook(BookDTO bookDTO);

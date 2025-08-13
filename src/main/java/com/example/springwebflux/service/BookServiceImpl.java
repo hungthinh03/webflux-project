@@ -33,6 +33,8 @@ public class BookServiceImpl implements BookService {
                 .flatMap(this::toDTO);
     }
 
+
+    //Create
     @Override
     public Flux<BookDTO> getAllBooks() {
         return repo.findAll()
@@ -46,6 +48,23 @@ public class BookServiceImpl implements BookService {
                 .flatMap(this::toDTO);
     }
 
+    public Flux<BookDTO> getBooksByAuthorId(Integer authorId) {
+        return repo.findAll() // or a custom query like findByAuthorId(authorId)
+                .filter(book -> book.getAuthorId().equals(authorId))
+                .flatMap(this::toDTO);
+    }
+
+    public Flux<BookDTO> getBooksByAuthorName(String name) {
+        return authorRepo.findByName(name)           // get authors with that name
+                .flatMap(author ->
+                        repo.findAll()
+                                .filter(book -> book.getAuthorId().equals(author.getId()))
+                                .flatMap(this::toDTO)
+                );
+    }
+
+
+    //Update
     @Override
     public Mono<BookDTO> updateBook(BookDTO dto) {
         return Mono.justOrEmpty(dto.getId())
@@ -63,6 +82,8 @@ public class BookServiceImpl implements BookService {
                 );
     }
 
+
+    //Delete
     @Override
     public Mono<Void> deleteBookById(Integer id) {
         return repo.findById(id)
