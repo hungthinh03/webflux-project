@@ -1,5 +1,6 @@
 package com.example.springwebflux.controller;
 
+import com.example.springwebflux.dto.BookDTO;
 import com.example.springwebflux.model.Book;
 import com.example.springwebflux.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,28 +16,28 @@ public class Controller {
     @Autowired
     private BookService service;
 
-    //Create
+    // Create
     @PostMapping
-    public Mono<Book> createNewBook(@RequestBody Book book) { //(@RequestBody Book book)
-        return service.createBook(book);
+    public Mono<BookDTO> createBook(@RequestBody BookDTO bookDTO) {
+        return service.createBook(bookDTO);
     }
 
     //Read
     @GetMapping("/all")
-    public Flux<Book> showAllBooks() {
+    public Flux<BookDTO> showAllBooks() {
         return service.getAllBooks();
     }
 
     //
     @GetMapping("/{id}")
-    public Mono<Book> showBookById(@PathVariable Integer id) {
+    public Mono<BookDTO> showBookById(@PathVariable Integer id) {
         return service.getBookById(id);
     }
 
     //Update
     @PutMapping
-    public Mono<Book> updateBook(@RequestBody Book book) {
-        return service.updateBook(book);
+    public Mono<BookDTO> updateBook(@RequestBody BookDTO bookDTO) {
+        return service.updateBook(bookDTO);
     }
 
     //Delete

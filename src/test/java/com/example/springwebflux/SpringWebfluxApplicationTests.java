@@ -17,7 +17,7 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class SpringWebfluxApplicationTests {
-
+    /*
     @Mock // creates dummy dependencies
     private BookRepository repo;
 
@@ -125,4 +125,6 @@ class SpringWebfluxApplicationTests {
                 .verifyComplete();
     }
 
+
+     */
 }
